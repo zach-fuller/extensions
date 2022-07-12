@@ -39,7 +39,11 @@ const useSchedule = (): {
       }
 
       Object.keys(data).map((key) => {
-        if (!Object.prototype.hasOwnProperty.call(data[key], "games")) {
+        if (
+          !Object.prototype.hasOwnProperty.call(data[key], "games") ||
+          data[key].games?.length == 0 ||
+          data[key]?.games[0].data == undefined
+        ) {
           delete data[key];
         }
       });
