@@ -11,8 +11,26 @@
       "name": "toggle",
       "title": "Toggle On/Off",
       "subtitle": "Elgato Key Light",
-      "description": "Toggles all connected Key Lights on or off",
+      "description": "Toggles connected Key Light on or off",
       "mode": "no-view"
+    },
+    {
+      "name": "toggleAll",
+      "title": "Toggle All On/Off",
+      "subtitle": "Elgato Key Light",
+      "description": "Toggles all connected Key Lights on or off",
+      "mode": "no-view",
+      "preferences": [
+        {
+          "name": "lightCount",
+          "type": "textfield",
+          "title": "Number of lights",
+          "description": "The number of keylights you are using",
+          "placeholder": "1",
+          "default": "1",
+          "required": false
+        }
+      ]
     },
     {
       "name": "increaseBrightness",

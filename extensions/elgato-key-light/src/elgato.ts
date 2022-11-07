@@ -22,9 +22,12 @@ export class KeyLight {
   }
 
   private service: RemoteService;
+  name: string;
 
-  private constructor(service: RemoteService) {
+
+constructor(service: RemoteService) {
     this.service = service;
+    this.name = service.name;
   }
 
   async toggle() {
