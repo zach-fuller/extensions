@@ -1,5 +1,6 @@
 import axios from "axios";
 import Bonjour, { RemoteService } from "bonjour";
+import { resolve } from "path";
 import { waitUntil } from "./utils";
 
 const WARM_TEMPERATURE = 344; // 2900k
@@ -7,74 +8,88 @@ const COLD_TEMPERATURE = 143; // 7000k
 const TEMPERATURE_STEP = (WARM_TEMPERATURE - COLD_TEMPERATURE) / 20; // 5%
 
 export class KeyLight {
-  static async discover() {
+  public keyLights: RemoteService[];
+  
+  async discover() {
+    console.log("EHEKEHJKEKJ")
     const bonjour = Bonjour();
-
-    const find = new Promise<KeyLight>((resolve) => {
-      bonjour.findOne({ type: "elg" }, (service) => {
-        const keyLight = new KeyLight(service);
-        resolve(keyLight);
-        bonjour.destroy();
+    const find = bonjour.find({ type: "elg" });
+    const result = new Promise<RemoteService[]>((resolve) => {
+      find.on("up", (service: RemoteService) => {
+        this.keyLights.push(service);
+        console.log("UP ZACH")
+        if (this.keyLights.length > 1) {
+          resolve(this.keyLights);
+        }
       });
-    });
+    })
 
-    return waitUntil(find, { timeoutMessage: "Cannot discover any Key Lights in the network" });
+    return waitUntil(result, { timeoutMessage: "Cannot discover any Key Lights in the network" });
+
   }
 
-  private service: RemoteService;
-
-  private constructor(service: RemoteService) {
-    this.service = service;
+  constructor() {
+    this.keyLights = [];
   }
 
-  async toggle() {
+  async toggleAll() {
+    console.log(this.keyLights.length)
+    for (const service of this.keyLights) {
+      await this.toggle(service);
+    }
+  }
+
+  async toggle(service: RemoteService) {
     try {
-      const keyLight = await this.getKeyLight(this.service);
+      console.log("TOGGLIGN");
+      const keyLight = await this.getKeyLight(service);
+      console.log(keyLight);
       const newState = !keyLight.on;
-      await this.updateKeyLight(this.service, { on: newState });
+      await this.updateKeyLight(service, { on: newState });
+
       return newState;
     } catch (e) {
       throw new Error("Failed toggling Key Light");
     }
   }
 
-  async increaseBrightness() {
+  async increaseBrightness(service: RemoteService) {
     try {
-      const keyLight = await this.getKeyLight(this.service);
+      const keyLight = await this.getKeyLight(service);
       const newBrightness = Math.min(keyLight.brightness + 5, 100);
-      await this.updateKeyLight(this.service, { brightness: newBrightness });
+      await this.updateKeyLight(service, { brightness: newBrightness });
       return newBrightness;
     } catch (e) {
       throw new Error("Failed increasing brightness");
     }
   }
 
-  async decreaseBrightness() {
+  async decreaseBrightness(service: RemoteService) {
     try {
-      const keyLight = await this.getKeyLight(this.service);
+      const keyLight = await this.getKeyLight(service);
       const newBrightness = Math.max(keyLight.brightness - 5, 0);
-      await this.updateKeyLight(this.service, { brightness: newBrightness });
+      await this.updateKeyLight(service, { brightness: newBrightness });
       return newBrightness;
     } catch (e) {
       throw new Error("Failed decreasing brightness");
     }
   }
 
-  async increaseTemperature() {
+  async increaseTemperature(service: RemoteService) {
     try {
-      const keyLight = await this.getKeyLight(this.service);
+      const keyLight = await this.getKeyLight(service);
       const newTemperature = Math.min(keyLight.temperature + TEMPERATURE_STEP, WARM_TEMPERATURE);
-      await this.updateKeyLight(this.service, { temperature: newTemperature });
+      await this.updateKeyLight(service, { temperature: newTemperature });
     } catch (e) {
       throw new Error("Failed increasing temperature");
     }
   }
 
-  async decreaseTemperature() {
+  async decreaseTemperature(service: RemoteService) {
     try {
-      const keyLight = await this.getKeyLight(this.service);
+      const keyLight = await this.getKeyLight(service);
       const newTemperature = Math.max(keyLight.temperature - TEMPERATURE_STEP, COLD_TEMPERATURE);
-      await this.updateKeyLight(this.service, { temperature: newTemperature });
+      await this.updateKeyLight(service, { temperature: newTemperature });
     } catch (e) {
       throw new Error("Failed decreasing temperature");
     }
