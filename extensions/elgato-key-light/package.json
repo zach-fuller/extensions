@@ -41,11 +41,34 @@
       "subtitle": "Elgato Key Light",
       "description": "Decrease color temperature of Key Light by 5%",
       "mode": "no-view"
+    },
+    {
+      "name": "toggle-all",
+      "title": "Toggle All",
+      "description": "Toggle all connected lights",
+      "mode": "no-view",
+      "preferences": [
+        {
+          "name": "lightCount",
+          "title": "Number of Lights",
+          "description": "HKCJDHCBKDJCB",
+          "type": "textfield",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "view",
+      "title": "View",
+      "description": "View connected lights",
+      "mode": "view"
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.44.0",
     "axios": "^1.2.0",
+    "@raycast/api": "^1.25.0",
+    "@raycast/utils": "^1.4.11",
     "bonjour": "^3.5.0"
   },
   "devDependencies": {

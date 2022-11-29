@@ -1,24 +1,36 @@
-import axios from "axios";
 import Bonjour, { RemoteService } from "bonjour";
-import { resolve } from "path";
+import { KeyLight } from "./elgato";
 import { waitUntil } from "./utils";
+import { getPreferenceValues } from "@raycast/api";
 
-class ControlCenter {
-    public keyLights: RemoteService[];  
-    async discover() {
+export class ControlCenter {
+    public keyLights: KeyLight[];  
+
+    constructor(keyLights: KeyLight[] = []) {
+        this.keyLights = keyLights;
+    }
+
+    async discover(all: boolean) {
         const bonjour = Bonjour();
         const find = bonjour.find({ type: "elg" });
-        const result = new Promise<RemoteService[]>((resolve) => {
+        const { lightCount } = getPreferenceValues();
+        const count: number = +lightCount;
+        this.keyLights = []
+        const result = new Promise<KeyLight[]>((resolve) => {
           find.on("up", (service: RemoteService) => {
-            this.keyLights.push(service);
-            console.log("UP ZACH")
-            if (this.keyLights.length > 1) {
+            const light = new KeyLight(service);
+            console.log(`${count}, ${this.keyLights.length}`)
+            this.keyLights.push(light);
+            if (!all) {
+              resolve(this.keyLights);
+            }
+            if (this.keyLights.length == count) {
               resolve(this.keyLights);
             }
           });
         })
     
-        return waitUntil(result, { timeoutMessage: "Cannot discover any Key Lights in the network" });
+        return waitUntil(result, { timeout: 3000, timeoutMessage: "Cannot discover any Key Lights in the network" });
     
       }
 }
