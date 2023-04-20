@@ -5,11 +5,7 @@
   "description": "Interact with Readwise Reader",
   "icon": "reader-logo.png",
   "author": "zach",
-  "categories": [
-    "Productivity",
-    "Media",
-    "Web"
-  ],
+  "categories": ["Productivity", "Media", "Web"],
   "license": "MIT",
   "commands": [
     {
@@ -56,13 +52,6 @@
       ]
     },
     {
-      "name": "save-selection",
-      "title": "Save Selection",
-      "description": "Save the currently selected URL",
-      "mode": "no-view",
-      "icon": "reader-logo.png"
-    },
-    {
       "name": "save-clipboard",
       "title": "Save Clipboard",
       "description": "Save a URL from the clipboard",
@@ -82,6 +71,20 @@
       "description": "Opens Reader to the shortlist page",
       "mode": "no-view",
       "icon": "reader-logo.png"
+    },
+    {
+      "name": "browse-library",
+      "title": "Browse Library",
+      "description": "Browse Reader Entries",
+      "mode": "view",
+      "icon": "reader-logo.png"
+    },
+    {
+      "name": "save-selection",
+      "title": "Save Selection",
+      "description": "Save the selected URL to Reader",
+      "mode": "no-view",
+      "icon": "reader-logo.png"
     }
   ],
   "dependencies": {
@@ -90,7 +93,7 @@
     "node-fetch": "^3.3.1"
   },
   "devDependencies": {
-    "@types/node": "18.8.3",
+    "@types/node": "^18.8.3",
     "@types/react": "18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
